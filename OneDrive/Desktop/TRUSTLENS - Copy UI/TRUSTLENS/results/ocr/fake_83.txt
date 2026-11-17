@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+4297.71
+Receiver
+Anita Reddy
+Receiver UPI
+jxrixsx@okicici
+Transaction ID
+237630146607
+Date
+Time
+06/01/2026 07:20

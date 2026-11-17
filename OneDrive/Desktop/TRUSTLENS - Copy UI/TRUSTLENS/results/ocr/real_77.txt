@@ -1,0 +1,18 @@
+Transaction Successful
+26 September 2025 at 6.53 PM
+Paid to
+Airtel
+8453.39
+airtel-billpayment paytm@pt
+0
+B
+Payment Details
+Message
+Airtel Broadband Bill Payment
+PhonePe Transaction ID
+T2509261853055026110363
+Debited from
+KVB
+XXXXXXXXXXXX3550
+8453.39
+UTR: 953132240156

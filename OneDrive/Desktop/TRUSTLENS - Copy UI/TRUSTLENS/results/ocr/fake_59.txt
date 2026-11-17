@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+948.75
+Receiver
+Amit Kumar
+Receiver UPI
+ttvqwfd@okhdfc
+Transaction ID
+915289373969
+Date
+Time
+19/02/2026 14.03

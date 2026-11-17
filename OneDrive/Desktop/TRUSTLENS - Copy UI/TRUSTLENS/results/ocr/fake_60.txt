@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+524.31
+Receiver
+Deepak Reddy
+Receiver UPI
+msxpjae@ibl
+Transaction ID
+555566154510
+Date
+Time
+12/05/2026 17.36

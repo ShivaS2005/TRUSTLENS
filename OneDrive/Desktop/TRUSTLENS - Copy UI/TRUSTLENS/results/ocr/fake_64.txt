@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+146.69
+Receiver
+Arun Patel
+Receiver UPI
+rbqdird@okhdfc
+Transaction ID
+775394898913
+Date
+Time
+27/01/2026 22.27

@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}Forensic Insights &amp; Analytics — TrustLens{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="dashboard-page-section">
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <div class="text-muted small fw-semibold text-uppercase letter-spacing-1">
+                    <a href="{{ url_for('home') }}" class="text-decoration-none text-muted">Overview</a>
+                    <span class="mx-2">/</span>
+                    <span class="text-dark">Analytics</span>
+                </div>
+                <h1 class="h3 fw-bold text-dark mt-1 mb-0">Forensic Intelligence &amp; Model Analytics</h1>
+            </div>
+            <div>
+                <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary">
+                    <i class="bi bi-cloud-arrow-up"></i> Ingest New Receipt
+                </a>
+            </div>
+        </div>
+
+        <!-- 1. KPI Stats Row -->
+        <div class="dashboard-stats-row">
+            <!-- Total -->
+            <div class="stat-metric-card stat-card-total">
+                <div class="stat-metric-top">
+                    <span class="stat-metric-label">TOTAL RECEIPTS</span>
+                    <div class="stat-metric-icon">
+                        <i class="bi bi-layers-fill"></i>
+                    </div>
+                </div>
+                <div class="stat-metric-value">{{ total }}</div>
+                <p class="stat-metric-caption">Processed through multi-modal pipeline</p>
+            </div>
+
+            <!-- Real -->
+            <div class="stat-metric-card stat-card-real">
+                <div class="stat-metric-top">
+                    <span class="stat-metric-label">AUTHENTICATED REAL</span>
+                    <div class="stat-metric-icon">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                </div>
+                <div class="stat-metric-value text-success">{{ real }}</div>
+                <p class="stat-metric-caption">Legitimate payment confirmations</p>
+            </div>
+
+            <!-- Fake -->
+            <div class="stat-metric-card stat-card-fake">
+                <div class="stat-metric-top">
+                    <span class="stat-metric-label">FORGERIES FLAGGED</span>
+                    <div class="stat-metric-icon">
+                        <i class="bi bi-shield-slash"></i>
+                    </div>
+                </div>
+                <div class="stat-metric-value text-danger">{{ fake }}</div>
+                <p class="stat-metric-caption">Tampered or synthetic receipts</p>
+            </div>
+
+            <!-- Interception Ratio -->
+            <div class="stat-metric-card stat-card-trust">
+                <div class="stat-metric-top">
+                    <span class="stat-metric-label">FORGERY RATE</span>
+                    <div class="stat-metric-icon">
+                        <i class="bi bi-percent"></i>
+                    </div>
+                </div>
+                <div class="stat-metric-value text-info">
+                    {% if total > 0 %}
+                        {{ ((fake / total) * 100)|round(1) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </div>
+                <p class="stat-metric-caption">Proportion of intercepted fraud</p>
+            </div>
+        </div>
+
+        <!-- 2. Charts Grid Row -->
+        <div class="charts-grid-row">
+            <!-- Donut Chart: Outcome Mix -->
+            <div class="chart-card-wrapper">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h3 class="h6 fw-bold text-dark mb-0">
+                        <i class="bi bi-pie-chart text-primary me-2"></i> Classification Distribution
+                    </h3>
+                    <span class="badge badge-neutral">XGBoost Ratio</span>
+                </div>
+                <p class="text-muted small mb-3">Authentic transactions vs intercepted forgeries.</p>
+
+                {% if total > 0 %}
+                <div class="chart-inner-wrap">
+                    <canvas id="outcomePieChart"></canvas>
+                </div>
+                <div class="d-flex justify-content-center gap-4 mt-3 small">
+                    <span class="d-flex align-items-center gap-2">
+                        <i class="bi bi-circle-fill text-success"></i> Authentic ({{ real }})
+                    </span>
+                    <span class="d-flex align-items-center gap-2">
+                        <i class="bi bi-circle-fill text-danger"></i> Forged ({{ fake }})
+                    </span>
+                </div>
+                {% else %}
+                <div class="empty-data-state py-4">
+                    <div class="empty-icon-box">
+                        <i class="bi bi-pie-chart"></i>
+                    </div>
+                    <p class="small text-muted mb-0">Outcome distribution will populate following your first receipt verification.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Bar Chart: Trust Score Trends -->
+            <div class="chart-card-wrapper">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <h3 class="h6 fw-bold text-dark mb-0">
+                        <i class="bi bi-graph-up text-primary me-2"></i> Recent Trust Scores (0-100)
+                    </h3>
+                    <span class="badge badge-neutral">Trajectory</span>
+                </div>
+                <p class="text-muted small mb-3">Confidence calibrated trust score of latest audits.</p>
+
+                {% if recent %}
+                <div class="chart-inner-wrap">
+                    <canvas id="trustBarChart"></canvas>
+                </div>
+                <p class="text-muted text-center small mt-3 mb-0">Displaying trajectory for latest {{ recent|length }} verifications.</p>
+                {% else %}
+                <div class="empty-data-state py-4">
+                    <div class="empty-icon-box">
+                        <i class="bi bi-bar-chart"></i>
+                    </div>
+                    <p class="small text-muted mb-0">Trust score trajectory will appear once transactions are logged.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- 3. Explainable AI & Thermal Heatmap Row -->
+        <div class="row g-4 mb-4">
+            <!-- SHAP Explainable AI Factors -->
+            <div class="col-lg-6">
+                <div class="dossier-card h-100">
+                    <div class="dossier-card-header">
+                        <h3 class="dossier-card-title">
+                            <i class="bi bi-cpu"></i> Explainable AI (SHAP) Model Weights
+                        </h3>
+                        <span class="badge badge-neutral">Feature Attribution</span>
+                    </div>
+                    <div class="dossier-card-body">
+                        {% if xai_scores %}
+                        <div class="shap-factor-list mb-4">
+                            {% for key, val in xai_scores.items() %}
+                            <div class="factor-item">
+                                <div class="factor-topline">
+                                    <span>{{ key }}</span>
+                                    <strong>{{ val }}%</strong>
+                                </div>
+                                <div class="factor-track">
+                                    <div class="factor-progress-fill" style="width: {{ val }}%;"></div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <div class="border-top pt-3">
+                            <div class="fw-bold small text-dark mb-2">FORENSIC RULE HEURISTICS:</div>
+                            <ul class="list-unstyled mb-0">
+                                {% for item in explanation %}
+                                <li class="d-flex align-items-center gap-2 small text-secondary mb-2">
+                                    <i class="bi bi-check2-circle text-primary"></i>
+                                    <span>{{ item }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heatmap Inspector -->
+            <div class="col-lg-6">
+                <div class="dossier-card h-100">
+                    <div class="dossier-card-header">
+                        <h3 class="dossier-card-title">
+                            <i class="bi bi-bounding-box"></i> Anomaly Heatmap Inspector
+                        </h3>
+                        <span class="badge badge-neutral">Error Level Analysis</span>
+                    </div>
+                    <div class="dossier-card-body">
+                        {% if heatmap_path %}
+                        <div class="inspect-viewport mb-3" style="min-height: 220px; max-height: 280px;">
+                            <img src="/{{ heatmap_path }}" alt="Latest Anomaly Heatmap">
+                        </div>
+                        {% else %}
+                        <div class="empty-data-state py-4 bg-light rounded border mb-3">
+                            <i class="bi bi-image text-muted fs-3 mb-2 d-block"></i>
+                            <span class="small text-muted">A thermal anomaly heatmap will be generated after your next scan.</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex flex-wrap justify-content-between align-items-center small text-muted border-top pt-3">
+                            <span class="fw-bold text-dark">Spectrum Legend:</span>
+                            <div class="d-flex align-items-center gap-3">
+                                <span><i class="bi bi-circle-fill text-danger me-1"></i> Anomaly</span>
+                                <span><i class="bi bi-circle-fill text-warning me-1"></i> Suspicious</span>
+                                <span><i class="bi bi-circle-fill text-success me-1"></i> Normal</span>
+                            </div>
+                        </div>
+
+                        {% if reasons %}
+                        <div class="mt-3 pt-2 border-top small text-muted">
+                            <strong class="d-block text-dark mb-1">Observed Signals:</strong>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for r in reasons %}
+                                <span class="badge bg-light text-dark border">{{ r }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Recent Audits Table -->
+        <div class="history-card-wrap">
+            <div class="d-flex align-items-center justify-content-between p-3 border-bottom">
+                <h3 class="h6 fw-bold text-dark mb-0">
+                    <i class="bi bi-clock-history text-primary me-2"></i> Recent Verification Logs
+                </h3>
+                <a href="{{ url_for('history') }}" class="small fw-semibold text-primary text-decoration-none">
+                    View Full Audit Trail <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            {% if recent %}
+            <div class="table-responsive">
+                <table class="custom-audit-table">
+                    <thead>
+                        <tr>
+                            <th>Receipt File</th>
+                            <th>Prediction</th>
+                            <th>Confidence</th>
+                            <th>Trust Score</th>
+                            <th>Risk Level</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in recent %}
+                        <tr>
+                            <td>
+                                <div class="receipt-cell">
+                                    <div class="receipt-mini-thumb">
+                                        <i class="bi bi-file-earmark-image"></i>
+                                    </div>
+                                    <div class="receipt-cell-info">
+                                        <strong>{{ row[1] }}</strong>
+                                        <small>ID #{{ row[0] }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge {% if row[2] == 'Real' %}badge-real{% else %}badge-fake{% endif %}">
+                                    <i class="bi {% if row[2] == 'Real' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %}"></i>
+                                    {{ row[2] }}
+                                </span>
+                            </td>
+                            <td class="mono-text">{{ row[3] }}</td>
+                            <td>
+                                <strong class="mono-text text-dark">{{ row[4] }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge {% if row[5] == 'Low' %}badge-real{% else %}badge-fake{% endif %}">
+                                    {{ row[5] }} Risk
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-data-state">
+                <div class="empty-icon-box">
+                    <i class="bi bi-inbox"></i>
+                </div>
+                <h3>No records logged yet</h3>
+                <p>Verify your first payment receipt to start populating forensic intelligence.</p>
+                <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary">
+                    <i class="bi bi-cloud-arrow-up"></i> Start Verification
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{% if total > 0 %}
+<script>
+// Outcome Pie Chart
+const outcomeCtx = document.getElementById('outcomePieChart');
+if (outcomeCtx) {
+    new Chart(outcomeCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Authentic Real', 'Forged / Tampered'],
+            datasets: [{
+                data: [{{ real }}, {{ fake }}],
+                backgroundColor: ['#059669', '#dc2626'],
+                borderWidth: 0,
+                hoverOffset: 6
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            cutout: '74%',
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+// Trust Scores Bar Chart
+const trustCtx = document.getElementById('trustBarChart');
+if (trustCtx) {
+    new Chart(trustCtx, {
+        type: 'bar',
+        data: {
+            labels: [{% for row in recent %}{{ row[1]|tojson }}{% if not loop.last %}, {% endif %}{% endfor %}],
+            datasets: [{
+                label: 'Trust Score',
+                data: [{{ trust_scores|join(", ") }}],
+                backgroundColor: '#0284c7',
+                borderRadius: 6,
+                maxBarThickness: 34
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#64748b', font: { size: 11 }, maxRotation: 0, autoSkip: true }
+                },
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    grid: { color: '#f1f5f9' },
+                    ticks: { color: '#64748b', font: { size: 11 }, stepSize: 25 }
+                }
+            }
+        }
+    });
+}
+</script>
+{% endif %}
+{% endblock %}

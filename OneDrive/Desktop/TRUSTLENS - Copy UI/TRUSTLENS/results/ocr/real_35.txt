@@ -1,0 +1,25 @@
+F
+A
+To Amazon
+Groceries
+2368
+You are paying for an Amazon order
+Completed
+5 Jun 2026,8.47am
+Federal Bank 5094
+UPI transaction ID
+615643933287
+To: Amazon
+Groceries
+Amazon
+amazonpaygrocery@apl
+From: SHIVANI S (Federal Bank)
+le
+shivaniluminozoosdokicici
+Google transaction ID
+CICAgJiOlq3jIA
+Pay
+Pay
+Pay
+Goog
+Pay *

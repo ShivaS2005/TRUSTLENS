@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+3533.34
+Receiver
+Rahul Sharma
+Receiver UPI
+debqxjy@okhdfc
+Transaction ID
+947322237644
+Date
+Time
+24/01/2026 00.34

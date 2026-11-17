@@ -1,0 +1,22 @@
+{
+    "payment_app": "PhonePe",
+    "bank": "Karur Vysya Bank",
+    "sender": "Not Available",
+    "receiver": "Zomato Media Private Limited",
+    "upi": "zomatolpaytm@hdfcbank",
+    "transaction_id": "T2607182133355647813353",
+    "amount": "130",
+    "date": "18 July 2026",
+    "time": "9:33 PM",
+    "prediction": "Fake",
+    "confidence": "62.53%",
+    "trust_score": "38/100",
+    "risk_level": "High",
+    "explanation": "Receipt shows possible forgery indicators.",
+    "features": [
+        "OCR Consistency",
+        "Layout Verification",
+        "Font Analysis",
+        "Metadata Validation"
+    ]
+}

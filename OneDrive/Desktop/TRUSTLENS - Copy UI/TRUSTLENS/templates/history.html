@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Audit History Trail — TrustLens{% endblock %}
+
+{% block content %}
+<section class="history-page-section">
+    <div class="container">
+        <!-- Header -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+            <div>
+                <div class="text-muted small fw-semibold text-uppercase letter-spacing-1">
+                    <a href="{{ url_for('home') }}" class="text-decoration-none text-muted">Overview</a>
+                    <span class="mx-2">/</span>
+                    <span class="text-dark">Audit Trail</span>
+                </div>
+                <h1 class="h3 fw-bold text-dark mt-1 mb-0">Verification Audit History</h1>
+                <p class="text-muted small mb-0">Review past multi-modal fraud scans, trust metrics, and risk classifications.</p>
+            </div>
+            <div>
+                <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary">
+                    <i class="bi bi-cloud-arrow-up"></i> Ingest New Receipt
+                </a>
+            </div>
+        </div>
+
+        <!-- History Card Wrapper -->
+        <div class="history-card-wrap">
+            <!-- Toolbar: Search, Filter Pills & CSV Export -->
+            <div class="history-toolbar">
+                <!-- Search Box -->
+                <div class="search-box-wrap">
+                    <i class="bi bi-search"></i>
+                    <input type="text" id="historySearch" class="table-search-input" placeholder="Search by filename, date, or verdict...">
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="filter-pills-wrap">
+                    <button type="button" class="filter-pill active" data-filter="all">All Records</button>
+                    <button type="button" class="filter-pill" data-filter="real">Authentic (Real)</button>
+                    <button type="button" class="filter-pill" data-filter="fake">Forged (Fake)</button>
+                    <button type="button" class="filter-pill" data-filter="high">High Risk</button>
+                </div>
+
+                <!-- CSV Export -->
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="exportCsvBtn" title="Export current view to CSV">
+                        <i class="bi bi-download me-1"></i> Export CSV
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table -->
+            {% if records %}
+            <div class="table-responsive">
+                <table class="custom-audit-table" id="auditTable">
+                    <thead>
+                        <tr>
+                            <th>Receipt Reference</th>
+                            <th>Assessment Verdict</th>
+                            <th>Model Confidence</th>
+                            <th>Trust Score</th>
+                            <th>Risk Assessment</th>
+                            <th>Report</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in records %}
+                        <tr data-record-id="{{ row[0] }}" data-status="{{ row[2] }}" data-risk="{{ row[5] }}">
+                            <!-- Receipt -->
+                            <td data-csv-value="{{ row[1] }}">
+                                <div class="receipt-cell">
+                                    <div class="receipt-mini-thumb">
+                                        <i class="bi bi-file-earmark-image"></i>
+                                    </div>
+                                    <div class="receipt-cell-info">
+                                        <strong title="{{ row[1] }}">{{ row[1] }}</strong>
+                                        <small>AUDIT RECORD #{{ row[0] }}</small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <!-- Assessment -->
+                            <td data-csv-value="{{ row[2] }}">
+                                <span class="badge {% if row[2] == 'Real' %}badge-real{% else %}badge-fake{% endif %}">
+                                    <i class="bi {% if row[2] == 'Real' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %}"></i>
+                                    {{ row[2] }}
+                                </span>
+                            </td>
+
+                            <!-- Confidence -->
+                            <td class="mono-text fw-semibold" data-csv-value="{{ row[3] }}">{{ row[3] }}</td>
+
+                            <!-- Trust Score -->
+                            <td data-csv-value="{{ row[4] }}">
+                                <strong class="mono-text text-dark">{{ row[4] }}</strong>
+                            </td>
+
+                            <!-- Risk -->
+                            <td data-csv-value="{{ row[5] }}">
+                                <span class="badge {% if row[5] == 'Low' %}badge-real{% else %}badge-fake{% endif %}">
+                                    {{ row[5] }} Risk
+                                </span>
+                            </td>
+
+                            <!-- Report -->
+                            <td data-csv-exclude>
+                                {% if row[7] %}
+                                <a class="report-download-link"
+                                   href="{{ url_for('download_report', record_id=row[0]) }}"
+                                   title="Download report for audit record #{{ row[0] }}"
+                                   aria-label="Download report for audit record #{{ row[0] }}">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                    <span>Download</span>
+                                </a>
+                                {% else %}
+                                <span class="report-unavailable">Not available</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Date -->
+                            <td class="text-muted small" data-csv-value="{{ row[6] }}">
+                                <i class="bi bi-calendar3 me-1"></i> {{ row[6] }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-data-state">
+                <div class="empty-icon-box">
+                    <i class="bi bi-inbox-fill"></i>
+                </div>
+                <h3>No verification records found</h3>
+                <p>Digital receipts scanned with TrustLens will be cataloged in this local audit log.</p>
+                <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary">
+                    <i class="bi bi-cloud-arrow-up"></i> Scan Your First Receipt
+                </a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Privacy & Storage Disclaimer -->
+        <div class="mt-4 text-center">
+            <small class="text-muted">
+                <i class="bi bi-database-lock me-1"></i> All audit metadata is maintained in the local SQLite ledger (`database.db`). No transaction records or images are transmitted to external servers.
+            </small>
+        </div>
+    </div>
+</section>
+{% endblock %}

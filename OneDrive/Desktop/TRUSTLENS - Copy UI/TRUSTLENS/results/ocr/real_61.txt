@@ -1,0 +1,16 @@
+Transaction Successful
+0
+12 June 2026 at 7:14 PM
+Paid to
+M S VASANTHAM HYPER MA
+0$
+844
+ibkPOS.EP116790@icici
+Payment Details
+PhonePe Transaction ID
+T2606121914030074364140
+Debited from
+KVB
+XXXXXXXXXXXX3550
+844
+UTR: 103801119203

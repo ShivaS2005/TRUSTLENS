@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Forensic Scanner — TrustLens{% endblock %}
+
+{% block content %}
+<section class="upload-workbench-section">
+    <div class="container">
+        <div class="workbench-card">
+            <!-- Header -->
+            <div class="workbench-header">
+                <div class="workbench-badge">
+                    <i class="bi bi-cpu"></i> NEURAL INGESTION BENCH
+                </div>
+                <h1>UPI Receipt Forensic Ingestion</h1>
+                <p>
+                    Submit a digital payment receipt for multi-modal verification. The system will deploy MobileNetV2 for visual feature analysis, EasyOCR for transactional syntax extraction, and XGBoost for fraud classification.
+                </p>
+            </div>
+
+            <!-- Body -->
+            <div class="workbench-body">
+                {% if error_message %}
+                <div class="alert alert-danger" role="alert">{{ error_message }}</div>
+                {% endif %}
+                <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    <!-- Dropzone -->
+                    <div class="dropzone-container" id="dropzone" onclick="document.getElementById('receipt').click()">
+                        <input type="file" id="receipt" name="receipt" accept="image/png, image/jpeg, image/jpg, image/webp" style="display: none;" required>
+
+                        <!-- Empty State Inside Dropzone -->
+                        <div class="dropzone-content" id="dropzoneContent">
+                            <div class="dropzone-icon-circle">
+                                <i class="bi bi-cloud-arrow-up-fill"></i>
+                            </div>
+                            <div class="dropzone-title">Drag &amp; drop payment receipt here</div>
+                            <div class="dropzone-subtitle">or click to browse local files</div>
+                            <div class="format-tags">
+                                <span class="format-tag">PNG</span>
+                                <span class="format-tag">JPG</span>
+                                <span class="format-tag">JPEG</span>
+                                <span class="format-tag">WEBP</span>
+                            </div>
+                        </div>
+
+                        <!-- Viewfinder Preview with Laser Scan -->
+                        <div class="preview-container" id="previewContainer">
+                            <div class="preview-overlay-badge">
+                                <i class="bi bi-eye-fill"></i> VIEWING TENSER
+                            </div>
+                            <div class="laser-scan-line"></div>
+                            <img id="previewImg" alt="Ingested receipt preview">
+                        </div>
+                    </div>
+
+                    <!-- File Metadata Strip -->
+                    <div class="file-meta-strip" id="fileMetaStrip">
+                        <div>
+                            <i class="bi bi-file-earmark-image text-primary me-2"></i>
+                            <strong id="metaFileName">receipt.png</strong>
+                            <span class="text-muted ms-2">(<span id="metaFileSize">0 KB</span>)</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-danger py-0 px-2" id="resetFileBtn">
+                            <i class="bi bi-x-circle"></i> Remove
+                        </button>
+                    </div>
+
+                    <!-- Submit Action Button -->
+                    <div class="mt-4">
+                        <button type="submit" class="btn-trust btn-trust-primary w-100 py-3" style="font-size: 15px;">
+                            <i class="bi bi-shield-check"></i> Execute Multi-Modal Forensic Analysis
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Guidance & Best Practices -->
+                <div class="workbench-guidance">
+                    <div class="guide-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <div>
+                            <strong>Full Frame Screenshot</strong>
+                            <div class="text-muted">Ensure the receipt boundaries, header, and footer timestamps are intact.</div>
+                        </div>
+                    </div>
+                    <div class="guide-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <div>
+                            <strong>Legible Transaction Details</strong>
+                            <div class="text-muted">Transaction ID (UTR), Amount, and UPI VPA must be visually clear for OCR parsing.</div>
+                        </div>
+                    </div>
+                    <div class="guide-item">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <div>
+                            <strong>Original Image Resolution</strong>
+                            <div class="text-muted">Avoid re-compressing via social media apps to preserve MobileNetV2 texture cues.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

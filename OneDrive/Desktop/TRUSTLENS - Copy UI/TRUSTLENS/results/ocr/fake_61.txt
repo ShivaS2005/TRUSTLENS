@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+4957.21
+Receiver
+Anita Singh
+Receiver UPI
+iqvqgqb@oksbi
+Transaction ID
+724588230951
+Date
+Time
+27/08/2026 04.27

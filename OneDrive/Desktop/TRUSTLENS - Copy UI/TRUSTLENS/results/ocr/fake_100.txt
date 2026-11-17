@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+4219.56
+Receiver
+Suresh Nair
+Receiver UPI
+fiqwilk@ibl
+Transaction ID
+706501983114
+Date
+Time
+16/06/2026 21.06

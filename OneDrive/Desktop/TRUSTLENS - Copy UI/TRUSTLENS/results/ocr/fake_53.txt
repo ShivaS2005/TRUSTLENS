@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+2903.20
+Receiver
+Priya Singh
+Receiver UPI
+vzwxnj@okicici
+Transaction ID
+208579673505
+Date
+Time
+19/06/2026 22.02

@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+4724.15
+Receiver
+Amit Patel
+Receiver UPI
+ealucxc@okicici
+Transaction ID
+981280215531
+Date
+Time
+13/11/2026 04.41

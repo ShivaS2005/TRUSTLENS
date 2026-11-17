@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}TrustLens — Multi-Modal AI for UPI Receipt Verification{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-grid">
+            <div class="hero-text-content">
+                <div class="hero-eyebrow">
+                    <i class="bi bi-shield-lock-fill"></i> Multi-Modal Payment Security &amp; Anti-Fraud
+                </div>
+                <h1 class="hero-title">
+                    Detect Forged UPI Receipts with <span class="gradient-text">Multi-Modal AI</span>.
+                </h1>
+                <p class="hero-description">
+                    Fraudulent digital payment receipts are increasingly generated via counterfeit apps and image editing. <strong>TrustLens</strong> inspects visual compression artifacts and textual transaction tokens simultaneously to deliver authoritative authenticity verdicts.
+                </p>
+
+                <!-- Core Technologies Pill List -->
+                <div class="hero-tech-stack">
+                    <span class="tech-chip"><i class="bi bi-cpu"></i> MobileNetV2</span>
+                    <span class="tech-chip"><i class="bi bi-fonts"></i> EasyOCR</span>
+                    <span class="tech-chip"><i class="bi bi-diagram-3"></i> Feature Fusion</span>
+                    <span class="tech-chip"><i class="bi bi-lightning-charge"></i> XGBoost</span>
+                    <span class="tech-chip"><i class="bi bi-pie-chart"></i> SHAP XAI</span>
+                </div>
+
+                <!-- CTAs -->
+                <div class="hero-actions">
+                    <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary">
+                        <i class="bi bi-cloud-arrow-up"></i> Launch Forensic Scanner
+                    </a>
+                    <a href="#pipeline" class="btn-trust btn-trust-outline">
+                        <i class="bi bi-diagram-2"></i> How It Works
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Right: Interactive Simulated Receipt Card -->
+            <div class="hero-visual-card">
+                <div class="card-topbar">
+                    <div class="receipt-app-brand">
+                        <div class="brand-logo-phonepe">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <span>UPI Payment Confirmation</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-secondary py-1 px-2" id="heroToggleMode" style="font-size: 11px;">
+                        <i class="bi bi-shield-check"></i> Standard View
+                    </button>
+                </div>
+
+                <div class="receipt-sim-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted small">Transaction Status</span>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                            <i class="bi bi-check-circle-fill me-1"></i> Successful
+                        </span>
+                    </div>
+
+                    <div class="receipt-sim-amount">₹ 2,450.00</div>
+
+                    <div class="receipt-sim-row">
+                        <span>Paid To:</span>
+                        <strong>Everyday Retail Services Pvt Ltd</strong>
+                    </div>
+                    <div class="receipt-sim-row">
+                        <span>UPI ID:</span>
+                        <strong class="mono-text">retailmerch@icici</strong>
+                    </div>
+                    <div class="receipt-sim-row">
+                        <span>Bank Ref / UTR:</span>
+                        <strong class="mono-text">412890457631</strong>
+                    </div>
+                    <div class="receipt-sim-row">
+                        <span>Timestamp:</span>
+                        <strong>18-Nov-2026, 10:42 AM</strong>
+                    </div>
+
+                    <!-- Neural Scan Overlay (Toggleable) -->
+                    <div class="neural-scan-overlay" id="heroScanView">
+                        <div class="scan-status-info">
+                            <div class="scan-status-icon">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div>
+                                <strong class="d-block text-dark small">Forensic Analysis: REAL</strong>
+                                <span class="text-muted" style="font-size: 11px;">1,285 Multimodal vectors verified</span>
+                            </div>
+                        </div>
+                        <div class="scan-score-badge">
+                            <div class="score-number">96<span style="font-size: 13px;">/100</span></div>
+                            <div class="score-label">Trust Score</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top small text-muted">
+                    <span><i class="bi bi-check2 text-success me-1"></i> EasyOCR Syntactic Check</span>
+                    <span><i class="bi bi-check2 text-success me-1"></i> MobileNetV2 Pixel Check</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Ingestion Workbench Anchor Section -->
+<section class="py-5 bg-white border-bottom" id="quick-verify">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-5">
+                <div class="section-eyebrow">INSTANT RECEIPT VERIFICATION</div>
+                <h2 class="h3 fw-bold text-dark mb-3">Upload your receipt for immediate analysis.</h2>
+                <p class="text-muted mb-4">
+                    Inspect digital payment confirmations from PhonePe, Google Pay, Paytm, BHIM, or any UPI-enabled service. TrustLens detects font manipulation, layout anomalies, invalid transaction identifiers, and spoofed receipts.
+                </p>
+                <div class="d-flex gap-3 text-muted small">
+                    <span><i class="bi bi-shield-check text-primary me-1"></i> Zero Data Leakage</span>
+                    <span><i class="bi bi-speedometer2 text-primary me-1"></i> &lt; 2s Inference</span>
+                    <span><i class="bi bi-file-earmark-pdf text-primary me-1"></i> Audit-Ready PDF</span>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="p-4 bg-light border rounded-3 shadow-sm">
+                    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data" id="quickUploadForm">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-dark small">Select Receipt Image (PNG, JPG, WEBP)</label>
+                            <input class="form-control" type="file" name="receipt" id="receiptQuick" accept="image/*" required>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">Max recommended file size: 10MB</small>
+                            <button type="submit" class="btn-trust btn-trust-primary">
+                                <i class="bi bi-search"></i> Verify Receipt Now
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5-Stage Forensic Pipeline Architecture -->
+<section class="pipeline-section" id="pipeline">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-eyebrow">SYSTEM ARCHITECTURE</div>
+            <h2 class="section-title">The Multi-Modal Verification Pipeline</h2>
+            <p class="section-subtitle">
+                How TrustLens fuses deep convolutional neural networks with semantic optical character recognition to detect sophisticated digital payment forgeries.
+            </p>
+        </div>
+
+        <div class="pipeline-cards-grid">
+            <!-- Stage 1 -->
+            <div class="pipeline-card">
+                <span class="pipeline-step-badge">STAGE 01</span>
+                <div class="pipeline-icon">
+                    <i class="bi bi-camera-fill"></i>
+                </div>
+                <h3>MobileNetV2 CNN</h3>
+                <p>
+                    Extracts 1,280 spatial deep visual features. Evaluates micro-texture inconsistencies, font rendering distortions, and compression noise signatures across the receipt canvas.
+                </p>
+            </div>
+
+            <!-- Stage 2 -->
+            <div class="pipeline-card">
+                <span class="pipeline-step-badge">STAGE 02</span>
+                <div class="pipeline-icon">
+                    <i class="bi bi-textarea-t"></i>
+                </div>
+                <h3>EasyOCR Engine</h3>
+                <p>
+                    Performs text detection and recognition to parse essential transaction entities: UPI VPA syntax, Bank Reference IDs, transaction amounts, timestamps, and recipient metadata.
+                </p>
+            </div>
+
+            <!-- Stage 3 -->
+            <div class="pipeline-card">
+                <span class="pipeline-step-badge">STAGE 03</span>
+                <div class="pipeline-icon">
+                    <i class="bi bi-diagram-3-fill"></i>
+                </div>
+                <h3>Multimodal Fusion</h3>
+                <p>
+                    Concatenates the 1,280 visual embedding vector with 5 lexical/syntactic features (text density, UPI structure, txn pattern, amount count, date count) into a unified 1,285-d vector.
+                </p>
+            </div>
+
+            <!-- Stage 4 -->
+            <div class="pipeline-card">
+                <span class="pipeline-step-badge">STAGE 04</span>
+                <div class="pipeline-icon">
+                    <i class="bi bi-lightning-charge-fill"></i>
+                </div>
+                <h3>XGBoost Classifier</h3>
+                <p>
+                    Gradient-boosted decision trees analyze feature interactions to compute classification probabilities, determining if the receipt is <strong>Real</strong> or <strong>Fake</strong> with a calibrated Trust Score.
+                </p>
+            </div>
+
+            <!-- Stage 5 -->
+            <div class="pipeline-card">
+                <span class="pipeline-step-badge">STAGE 05</span>
+                <div class="pipeline-icon">
+                    <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                </div>
+                <h3>SHAP &amp; Forensic PDF</h3>
+                <p>
+                    Computes Shapley additive explanations (SHAP) to provide transparent feature attribution, renders an anomaly heatmap, and compiles an automated, court-ready PDF forensic report.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Detected Forgery Attack Vectors -->
+<section class="threat-grid-section">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-eyebrow">THREAT INTELLIGENCE</div>
+            <h2 class="section-title">Common UPI Forgery Attacks Detected</h2>
+            <p class="section-subtitle">
+                Synthetic payment receipts generated by scam applications, fake receipt generators, or manual image manipulation exhibit subtle structural anomalies that TrustLens isolates.
+            </p>
+        </div>
+
+        <div class="threat-cards-grid">
+            <div class="threat-card">
+                <div class="threat-icon-wrap">
+                    <i class="bi bi-fonts"></i>
+                </div>
+                <h3>Font &amp; Kerning Tampering</h3>
+                <p>
+                    Counterfeit generators often use incorrect font weights, improper letter-spacing, or mismatched glyphs when substituting merchant names and payment amounts.
+                </p>
+            </div>
+
+            <div class="threat-card">
+                <div class="threat-icon-wrap">
+                    <i class="bi bi-link-45deg"></i>
+                </div>
+                <h3>Invalid UPI VPA Formatting</h3>
+                <p>
+                    Genuine transactions follow standard NPCI handle conventions (`name@bank`). Forged receipts frequently incorporate invalid banking handles or syntactically broken identifiers.
+                </p>
+            </div>
+
+            <div class="threat-card">
+                <div class="threat-icon-wrap">
+                    <i class="bi bi-123"></i>
+                </div>
+                <h3>Spoofed Transaction IDs</h3>
+                <p>
+                    Transaction identifiers adhere to length, date-code prefixes, and algorithmic check sequences. TrustLens identifies randomized or out-of-sequence reference numbers.
+                </p>
+            </div>
+
+            <div class="threat-card">
+                <div class="threat-icon-wrap">
+                    <i class="bi bi-bounding-box-circles"></i>
+                </div>
+                <h3>Splicing &amp; Compression Noise</h3>
+                <p>
+                    When text is pasted over a background, Error Level Analysis (ELA) and MobileNetV2 detect localized compression variance and unnatural gradient seams invisible to the naked eye.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Supported Applications Ecosystem -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container text-center">
+        <p class="section-eyebrow mb-3">COMPATIBLE WITH MAJOR UPI PAYMENT APPLICATIONS</p>
+        <div class="d-flex flex-wrap justify-content-center align-items-center gap-4 gap-md-5 pt-2">
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-wallet2 text-primary fs-4"></i> PhonePe
+            </div>
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-google text-danger fs-4"></i> Google Pay
+            </div>
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-credit-card text-info fs-4"></i> Paytm
+            </div>
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-bank text-warning fs-4"></i> BHIM UPI
+            </div>
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-cart-check text-dark fs-4"></i> Amazon Pay
+            </div>
+            <div class="d-flex align-items-center gap-2 fw-bold text-secondary">
+                <i class="bi bi-shield-check text-success fs-4"></i> CRED Pay
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Bottom CTA -->
+<section class="py-5" style="background: linear-gradient(135deg, #090e17 0%, #1e293b 100%); color: #ffffff;">
+    <div class="container text-center py-4">
+        <h2 class="h2 fw-bold text-white mb-3">Ready to verify a suspicious transaction?</h2>
+        <p class="text-muted mb-4 mx-auto" style="max-width: 580px;">
+            Upload any UPI payment confirmation image to execute the multi-modal neural scan and generate an official verification dossier.
+        </p>
+        <a href="{{ url_for('upload') }}" class="btn-trust btn-trust-primary px-4 py-3">
+            <i class="bi bi-cloud-arrow-up"></i> Start Forensic Review
+        </a>
+    </div>
+</section>
+{% endblock %}

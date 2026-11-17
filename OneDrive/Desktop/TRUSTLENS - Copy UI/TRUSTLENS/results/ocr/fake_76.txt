@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+3637.91
+Receiver
+Anita Sharma
+Receiver UPI
+wnqbjjl@ibl
+Transaction ID
+165979860559
+Date
+Time
+15/10/2026 04.23

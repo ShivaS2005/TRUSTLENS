@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+4472.00
+Receiver
+Arun Sharma
+Receiver UPI
+mwfmirj@ibl
+Transaction ID
+293594114277
+Date
+Time
+09/10/2026 21:50

@@ -1,0 +1,19 @@
+Transaction Successful
+0
+0120
+30 May 2026 at 5:15 PM
+Paid to
+Abbasmanthiri B
+8400
+BHARATPE.9YOBOI0I6C590045_
+Payment Details
+Message
+to BharatPe Merchant
+PhonePe Transaction ID
+T2605301715212883330528
+Debited from
+KVB
+XXXXXXXXXXXX3550
+8400
+UTR: 152255115699
+Pay

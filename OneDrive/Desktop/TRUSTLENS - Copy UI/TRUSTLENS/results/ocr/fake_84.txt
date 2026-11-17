@@ -1,0 +1,14 @@
+Synthetic Payment Receipt
+Status
+SUCCESS
+Amount
+786.54
+Receiver
+Amit Patel
+Receiver UPI
+dphxhnn@ibl
+Transaction ID
+158389807795
+Date
+Time
+10/03/2026 14.32
