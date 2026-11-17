@@ -10,7 +10,11 @@ import re
 from explainable_ai import generate_heatmap, generate_explanation
 from PIL import Image, UnidentifiedImageError
 from werkzeug.utils import secure_filename
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+import tensorflow as tf
+tf.config.set_visible_devices([], "GPU")
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.preprocessing import image
