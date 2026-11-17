@@ -12,3 +12,5 @@ uploads/*
 !uploads/.gitkeep
 temp_extract/
 *.log
+
+trustlens_model.h5
