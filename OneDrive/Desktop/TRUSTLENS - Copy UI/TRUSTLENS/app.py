@@ -551,27 +551,39 @@ def upload():
     file.save(save_path)
 
     
+    
     # -----------------------------
     # Run OCR Parser
     # -----------------------------
 
-    result = subprocess.run(
-        [sys.executable, "test_image.py", save_path],
-        capture_output=True,
-        text=True
-    )
+    try:
+        result = subprocess.run(
+            [sys.executable, "test_image.py", save_path],
+            capture_output=True,
+            text=True,
+            timeout=150
+        )
 
-    print("TEST IMAGE OUTPUT:")
-    print(result.stdout)
+        print("TEST IMAGE OUTPUT:")
+        print(result.stdout)
 
-    print("TEST IMAGE ERROR:")
-    print(result.stderr)
+        print("TEST IMAGE ERROR:")
+        print(result.stderr)
 
-    if result.returncode != 0:
+        if result.returncode != 0:
+            return render_template(
+                "upload.html",
+                error_message="Receipt analysis failed. Please try again."
+            ), 500
+
+    except subprocess.TimeoutExpired:
+        print("ERROR: Receipt processing timed out")
+
         return render_template(
             "upload.html",
-            error_message="Receipt analysis could not be completed. Please try again with a clear receipt image."
-        ), 500
+            error_message="Receipt analysis took too long. Please try again."
+        ), 504
+
     # -----------------------------
     # Read Latest result.json
     # -----------------------------
